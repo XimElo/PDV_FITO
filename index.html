@@ -17,10 +17,33 @@
   <h2>USUARIOS</h2>
 </div>
 
-<!-- SEARCH -->
+<!-- gerencia -->
 <div class="search-box">
-  <input type="text" id="search" placeholder="Buscar tienda o código...">
+  <select id="gerencia">
+    <option value="">Selecciona Gerencia</option>
+    <option value="PUEBLA">PUEBLA</option>
+    <option value="MORELIA">MORELIA</option>
+    <option value="SURESTE">SURESTE</option>
+    <option value="PENINSULA">PENÍNSULA</option>
+  </select>
 </div>
+
+/* BUSCADOR */
+let timeout;
+
+document.getElementById("search").addEventListener("input", e => {
+
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+    render(e.target.value);
+  }, 250);
+});
+
+/* CAMBIO DE GERENCIA */
+document.getElementById("gerencia").addEventListener("change", () => {
+  render(document.getElementById("search").value);
+});
 
 <!-- LOADING -->
 <div id="loading" class="loading">Cargando datos...</div>
@@ -59,19 +82,27 @@ fetch('data.json')
     render();
   });
 
-// ✅ RENDER
 const list = document.getElementById("list");
 
 function render(filter = "") {
+
+  const selectedGerencia = document.getElementById("gerencia").value;
 
   list.innerHTML = "";
 
   data
     .filter(d =>
-      d.tienda.toLowerCase().includes(filter.toLowerCase()) ||
-      d.code.toLowerCase().includes(filter.toLowerCase())
+      (
+        // ✅ filtro por gerencia
+        selectedGerencia === "" || d.gerencia === selectedGerencia
+      ) &&
+      (
+        // ✅ buscador normal
+        d.tienda.toLowerCase().includes(filter.toLowerCase()) ||
+        d.code.toLowerCase().includes(filter.toLowerCase())
+      )
     )
-    .slice(0, 80) // 🔥 LIMITA RESULTADOS (MEJORA RENDIMIENTO)
+    .slice(0, 80)
     .forEach(d => {
 
       list.innerHTML += `
@@ -93,7 +124,6 @@ function render(filter = "") {
       `;
     });
 }
-
 // ✅ BUSCADOR CON DEBOUNCE (NO LAG)
 let timeout;
 
