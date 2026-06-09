@@ -17,16 +17,17 @@
   <h2>USUARIOS</h2>
 </div>
 
-<!-- gerencia -->
-<div class="search-box">
-  <select id="gerencia">
-    <option value="">Selecciona Gerencia</option>
-    <option value="PUEBLA">PUEBLA</option>
-    <option value="MORELIA">MORELIA</option>
-    <option value="SURESTE">SURESTE</option>
-    <option value="PENINSULA">PENÍNSULA</option>
-  </select>
+<!-- GERENCIAS VISUAL -->
+<div class="gerencias">
+
+  <button onclick="selectGerencia('PUEBLA')">🏪 PUEBLA</button>
+  <button onclick="selectGerencia('MORELIA')">📍 MORELIA</button>
+  <button onclick="selectGerencia('SURESTE')">🌴 SURESTE</button>
+  <button onclick="selectGerencia('PENINSULA')">🌊 PENÍNSULA</button>
+
 </div>
+
+
 
 /* BUSCADOR */
 let timeout;
@@ -73,7 +74,26 @@ document.getElementById("gerencia").addEventListener("change", () => {
 
 let data = [];
 
+let currentGerencia = "";
+
+// cuando seleccionan gerencia
+function selectGerencia(g) {
+
+  currentGerencia = g;
+
+  // opcional: ocultar los botones
+  document.querySelector(".gerencias").style.display = "none";
+
+  render();
+}
+  
 // ✅ CARGAR JSON
+ function resetGerencia(){
+  currentGerencia = "";
+  document.querySelector(".gerencias").style.display = "grid";
+  render();
+}
+ 
 fetch('data.json')
   .then(res => res.json())
   .then(json => {
@@ -86,8 +106,7 @@ const list = document.getElementById("list");
 
 function render(filter = "") {
 
-  const selectedGerencia = document.getElementById("gerencia").value;
-
+const selectedGerencia = currentGerencia;
   list.innerHTML = "";
 
   data
@@ -124,6 +143,9 @@ function render(filter = "") {
       `;
     });
 }
+
+<button onclick="resetGerencia()">🔙 Cambiar gerencia</button>
+  
 // ✅ BUSCADOR CON DEBOUNCE (NO LAG)
 let timeout;
 
