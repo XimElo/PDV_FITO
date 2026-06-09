@@ -101,3 +101,24 @@ body {
   font-size:18px;
   color:#999;
 }
+.gerencias {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:10px;
+}
+
+.gerencias button {
+  padding:15px;
+  font-size:14px;
+  border:none;
+  border-radius:10px;
+  background:#3b5ea9;
+  color:white;
+  cursor:pointer;
+}
+
+.gerencias button:hover {
+  background:#2f4a87;
+}
+
