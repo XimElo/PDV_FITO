@@ -49,6 +49,18 @@ function selectGerencia(g) {
   currentGerencia = g;
   document.querySelector(".gerencias").style.display = "none";
   render();
+  const header = document.querySelector(".header");
+
+// limpiar clases anteriores
+header.classList.remove("PUEBLA","MORELIA","SURESTE","PENINSULA");
+
+// agregar nueva
+header.classList.add(g);
+
+  document.querySelectorAll(".gerencias button")
+  .forEach(btn => btn.classList.remove("active"));
+
+event.target.classList.add("active");
 }
 
 // ✅ RESET GERENCIA
