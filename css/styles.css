@@ -58,12 +58,14 @@ body {
   color:white;
 }
 
-.GUERRERO {background:#d9534f;}
-.PUEBLA {background:#5bc0de;}
-.MORELOS {background:#5cb85c;}
-.OAXACA {background:#f0ad4e;}
-.VERACRUZ {background:#6f42c1;}
+.header.PUEBLA { background:#3b5ea9; }
+.header.MORELIA { background:#198754; }
+.header.SURESTE { background:#fd7e14; }
+.header.PENINSULA { background:#6f42c1; }
 
+.gerencias button.active {
+  background:#222;
+}
 .modal {
   display:none;
   position:fixed;
