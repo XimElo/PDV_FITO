@@ -4,96 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Usuarios REEV</title>
-
 <!-- ✅ CSS externo (más pro) -->
 <link rel="stylesheet" href="css/styles.css">
-
 </head>
-
 <body>
-
 <!-- HEADER -->
 <div class="header">
   <h2>USUARIOS</h2>
 </div>
 
+
 <!-- GERENCIAS VISUAL -->
 <div class="gerencias">
-
   <button onclick="selectGerencia('PUEBLA')">🏪 PUEBLA</button>
   <button onclick="selectGerencia('MORELIA')">📍 MORELIA</button>
   <button onclick="selectGerencia('SURESTE')">🌴 SURESTE</button>
   <button onclick="selectGerencia('PENINSULA')">🌊 PENÍNSULA</button>
-
 </div>
 
-
-
-/* BUSCADOR */
-let timeout;
-
-document.getElementById("search").addEventListener("input", e => {
-
-  clearTimeout(timeout);
-
-  timeout = setTimeout(() => {
-    render(e.target.value);
-  }, 250);
-});
-
-/* CAMBIO DE GERENCIA */
-document.getElementById("gerencia").addEventListener("change", () => {
-  render(document.getElementById("search").value);
-});
-
-<!-- LOADING -->
-<div id="loading" class="loading">Cargando datos...</div>
-
-<!-- LIST -->
-<div class="list" id="list"></div>
-
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h3 id="modalTitle"></h3>
-
-    <p><b>Usuario:</b><br>
-      <span id="modalUser"></span>
-    </p>
-
-    <p><b>Contraseña:</b><br>
-      <span id="modalPass"></span>
-    </p>
-
-    <button class="btn" onclick="copyData()">📋 Copiar</button>
-    <button class="btn" onclick="closeModal()">Cerrar</button>
-  </div>
+<!-- BUSCADOR -->
+<div class="search-box">
+  <input type="text" id="search" placeholder="Buscar tienda o código...">
 </div>
+
+<!-- BOTON REGRESAR -->
+<button onclick="resetGerencia()">🔙 Cambiar gerencia</button>
 
 <script>
-
 let data = [];
-
+let timeout;
 let currentGerencia = "";
 
-// cuando seleccionan gerencia
-function selectGerencia(g) {
-
-  currentGerencia = g;
-
-  // opcional: ocultar los botones
-  document.querySelector(".gerencias").style.display = "none";
-
-  render();
-}
-  
 // ✅ CARGAR JSON
- function resetGerencia(){
-  currentGerencia = "";
-  document.querySelector(".gerencias").style.display = "grid";
-  render();
-}
- 
 fetch('data.json')
   .then(res => res.json())
   .then(json => {
@@ -102,53 +44,61 @@ fetch('data.json')
     render();
   });
 
+// ✅ SELECCIONAR GERENCIA
+function selectGerencia(g) {
+  currentGerencia = g;
+  document.querySelector(".gerencias").style.display = "none";
+  render();
+}
+
+// ✅ RESET GERENCIA
+function resetGerencia() {
+  currentGerencia = "";
+  document.querySelector(".gerencias").style.display = "grid";
+  render();
+}
+
+// ✅ RENDER
 const list = document.getElementById("list");
 
 function render(filter = "") {
 
-const selectedGerencia = currentGerencia;
   list.innerHTML = "";
 
   data
-    .filter(d =>
-      (
-        // ✅ filtro por gerencia
-        selectedGerencia === "" || d.gerencia === selectedGerencia
-      ) &&
-      (
-        // ✅ buscador normal
-        d.tienda.toLowerCase().includes(filter.toLowerCase()) ||
-        d.code.toLowerCase().includes(filter.toLowerCase())
-      )
-    )
+    .filter(d => {
+
+      const gerenciaLimpia = d.gerencia
+        .toUpperCase()
+        .replace("GERENCIA ", "");
+
+      return (
+        (currentGerencia === "" || gerenciaLimpia === currentGerencia) &&
+        (
+          d.tienda.toLowerCase().includes(filter.toLowerCase()) ||
+          d.code.toLowerCase().includes(filter.toLowerCase())
+        )
+      );
+    })
     .slice(0, 80)
     .forEach(d => {
 
       list.innerHTML += `
         <div class="item" onclick="openModal('${d.tienda}','${d.user}','${d.pass}')">
-          
           <div>
             <div class="code">${d.code}</div>
             <div class="tienda">${d.tienda}</div>
-
             <div class="estado">
-              <span class="badge ${d.estado}">
-                ${d.estado}
-              </span>
+              <span class="badge ${d.estado}">${d.estado}</span>
             </div>
           </div>
-
           <div class="arrow">›</div>
         </div>
       `;
     });
 }
 
-<button onclick="resetGerencia()">🔙 Cambiar gerencia</button>
-  
-// ✅ BUSCADOR CON DEBOUNCE (NO LAG)
-let timeout;
-
+// ✅ BUSCADOR (SIN LAG)
 document.getElementById("search").addEventListener("input", e => {
 
   clearTimeout(timeout);
@@ -156,7 +106,6 @@ document.getElementById("search").addEventListener("input", e => {
   timeout = setTimeout(() => {
     render(e.target.value);
   }, 250);
-
 });
 
 // ✅ MODAL
@@ -173,7 +122,6 @@ function closeModal() {
 
 // ✅ COPIAR
 function copyData() {
-
   const text =
     "Usuario: " + document.getElementById("modalUser").innerText +
     "\nContraseña: " + document.getElementById("modalPass").innerText;
@@ -182,7 +130,7 @@ function copyData() {
   alert("Copiado ✅");
 }
 
-// ✅ CERRAR MODAL AL TOCAR FONDO
+// ✅ CERRAR MODAL
 document.getElementById("modal").onclick = function(e) {
   if (e.target.id === "modal") {
     closeModal();
@@ -190,6 +138,8 @@ document.getElementById("modal").onclick = function(e) {
 };
 
 </script>
-
 </body>
 </html>
+
+
+
